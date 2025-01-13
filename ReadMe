@@ -1,0 +1,1226 @@
+2024-12-10 11:42
+A Basic chess.js html/css/js template
+JQuery
+chessboardjs/css
+chess.js
+
+There is a chess.js code error eg console error: Uncaught SyntaxError: Unexpected token 'export' (at chess.js:252:1)
+MSVSCode IDE CoPilotAI
+The error `Uncaught SyntaxError: Unexpected token 'export'` typically occurs when you try to use ES6 module syntax (`export`) in a script that is not being treated as a module. To fix this, you need to ensure that the script is loaded as a module.
+
+You can do this by adding the `type="module"` attribute to the `<script>` tag that includes
+
+chess.js
+
+. Here's the updated code:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chess</title>
+    <style></style>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../css/chessboard-1.0.0.css" />
+    <script src="../js/chessboard-1.0.0.js"></script>
+    <script type="module" src="./chess.js"></script>
+  </head>
+  <body class="Site">
+    <header>
+      <h1>Basic Chess</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <main class="page-body">
+      <h1>Basic chess html css js index file</h1>
+      <p>Make a JavaScript Chess Board</p>
+      <p>Some text</p>
+      <div id="board" style="width: 600px"></div>
+
+      <button id="startBtn">Start Positions</button>
+      <!-- The id tag allows the JQuery code to be executed when pressing the button. -->
+      <button id="clearBtn">Clear Board</button>
+    </main>
+    <footer class="page-footer">
+      <p>&copy; 2021 CRR BASIC CHESS(HtmlCssJs)</p>
+    </footer>
+    <script>
+      // Your JavaScript code here
+    </script>
+  </body>
+</html>
+```
+
+Changes made:
+
+1. Added `type="module"` to the `<script>` tag that includes
+
+chess.js
+Similar code found with 2 license types
+
+This is fixed now. The error was due to the use of ES6 module syntax in a script that was not being treated as
+a module. By adding the `type="module"` attribute to the `<script>` tag that includes `chess.js`, the error is
+resolved.
+You can now use the chess.js code without encountering the `Uncaught SyntaxError: Unexpected token 'export'` error.
+
+NEXT: Need to add JS code to activate chessboard
+// Your JavaScript code here
+var config = {
+draggable: true,
+position: "start",
+onDragStart: onDragStart,
+onDrop: onDrop,
+onMouseoutSquare: onMouseoutSquare,
+onMouseoverSquare: onMouseoverSquare,
+onSnapEnd: onSnapEnd,
+};
+var board = Chessboard("board", config);
+var board = Chessboard("board", "start")
+Make an interactive chessboard
+
+https://blog.davideai.dev/make-a-basic-chess-board-with-chessboardjs
+Now that you got the basics let's add some interaction!
+
+We can create an interactive board where we can move the pieces by dragging them, and it's just as easy.
+
+In this case, we'll add buttons to set up and clear the board using JQuery commands.
+
+Let's start with the HTML, we'll create a board just like before in a <div> tag, but this time we'll add two buttons, one to set up the board in the starting position and one to clear it.
+
+<!-- Button elements to interact with the board -->
+
+    <button id="startBtn">Start Positions</button>      <!-- The id tag allows the JQuery code to be executed when pressing the button. -->
+    <button id="clearBtn">Clear Board</button>
+
+Then let's update the code inside the <script> tag.
+
+Copy
+// Create a board variable using the "Chessboard" keyword.
+var board = Chessboard('board', { // This object specifies the level of interaction.
+draggable: true, // Make the pieces draggable.
+dropOffBoard: 'trash', // Remove pieces by draggin them off the board.
+sparePieces: true // Show pieces outside the board and allow to drag them onto the board.
+})
+
+// Commands executed by the buttons.
+$('#startBtn').on('click', board.start)     // Set up the pieces in the starting position.
+$('#clearBtn').on('click', board.clear) // Clear the board.
+
+NEXT chess.js interaction activation eg
+import { Chess } from './chess.js';
+const game = new Chess();
+
+NO CHESSBOARD DISLAY:CoPilotAI:
+It looks like the `board` variable is not defined before it is used in the jQuery click handlers.
+You need to initialize the chessboard and assign it to the `board` variable. Here's the corrected code:
+To enable the engine to play after White's first move, you can use the
+
+chess.js
+
+library to make the engine move. Here's an example of how you can implement this:
+
+1. After White's move, the engine (Black) will make a move.
+2. Use the `game.moves()` function to get all possible moves for the engine.
+3. Randomly select one of the possible moves for the engine.
+
+Here's the updated code:
+
+Changes made:
+
+1. Added the `makeBestMove` function to make a random move for the engine.
+2. Called `makeBestMove` after White's move with a timeout to simulate thinking time.
+3. Updated the `onDrop` function to call `makeBestMove` after a valid move.
+
+Similar code found with 2 license types
+To improve the engine's moves, you can implement a basic minimax algorithm with alpha-beta pruning. This algorithm will help the engine evaluate the best possible move by looking ahead a few moves and considering the opponent's responses.
+
+Here's an example of how you can implement a simple minimax algorithm with alpha-beta pruning:
+
+1. Define the evaluation function to evaluate the board position.
+2. Implement the minimax algorithm with alpha-beta pruning.
+3. Use the minimax algorithm to determine the best move for the engine.
+
+Here's the updated code:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chess</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .Site {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background-color: #771515;
+        color: rgb(204, 192, 192);
+        padding: 10px;
+        text-align: center;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #444;
+        overflow: hidden;
+      }
+      nav ul li {
+        float: left;
+      }
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      nav ul li a:hover {
+        background-color: #111;
+      }
+      .page-body {
+        flex: 1;
+      }
+      .page-footer {
+        background-color: rgb(75, 70, 74);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      #board {
+        width: 600px;
+        margin: 20px;
+      }
+      button {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #startBtn {
+        margin: 10px;
+      }
+    </style>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../css/chessboard-1.0.0.css" />
+    <script src="../js/chessboard-1.0.0.js"></script>
+    <script type="module">
+      import { Chess } from "./chess.js";
+      const game = new Chess();
+
+      function onDragStart(source, piece, position, orientation) {
+        if (
+          game.in_checkmate() === true ||
+          game.in_draw() === true ||
+          piece.search(/^b/) !== -1
+        ) {
+          return false;
+        }
+      }
+
+      function onDrop(source, target) {
+        const move = game.move({
+          from: source,
+          to: target,
+          promotion: "q",
+        });
+
+        if (move === null) return "snapback";
+
+        window.setTimeout(makeBestMove, 250);
+      }
+
+      function onMouseoutSquare(square, piece) {
+        removeGreySquares();
+      }
+
+      function onMouseoverSquare(square, piece) {
+        const moves = game.moves({
+          square: square,
+          verbose: true,
+        });
+
+        if (moves.length === 0) return;
+
+        greySquare(square);
+
+        for (let i = 0; i < moves.length; i++) {
+          greySquare(moves[i].to);
+        }
+      }
+
+      function onSnapEnd() {
+        board.position(game.fen());
+      }
+
+      function removeGreySquares() {
+        $("#board .square-55d63").css("background", "");
+      }
+
+      function greySquare(square) {
+        const squareEl = $("#board .square-" + square);
+
+        let background = "#a9a9a9";
+        if (squareEl.hasClass("black-3c85d") === true) {
+          background = "#696969";
+        }
+
+        squareEl.css("background", background);
+      }
+
+      function evaluateBoard(board) {
+        const pieceValues = {
+          p: 1,
+          n: 3,
+          b: 3,
+          r: 5,
+          q: 9,
+          k: 0,
+        };
+
+        let value = 0;
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const piece = board[row][col];
+            if (piece) {
+              const pieceValue = pieceValues[piece.type];
+              value += piece.color === "w" ? pieceValue : -pieceValue;
+            }
+          }
+        }
+        return value;
+      }
+
+      function minimax(depth, isMaximizingPlayer, alpha, beta) {
+        if (depth === 0 || game.game_over()) {
+          return evaluateBoard(game.board());
+        }
+
+        const possibleMoves = game.ugly_moves();
+        if (isMaximizingPlayer) {
+          let maxEval = -Infinity;
+          for (const move of possibleMoves) {
+            game.ugly_move(move);
+            const eval = minimax(depth - 1, false, alpha, beta);
+            game.undo();
+            maxEval = Math.max(maxEval, eval);
+            alpha = Math.max(alpha, eval);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return maxEval;
+        } else {
+          let minEval = Infinity;
+          for (const move of possibleMoves) {
+            game.ugly_move(move);
+            const eval = minimax(depth - 1, true, alpha, beta);
+            game.undo();
+            minEval = Math.min(minEval, eval);
+            beta = Math.min(beta, eval);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return minEval;
+        }
+      }
+
+      function getBestMove() {
+        let bestMove = null;
+        let bestValue = -Infinity;
+        const possibleMoves = game.ugly_moves();
+
+        for (const move of possibleMoves) {
+          game.ugly_move(move);
+          const boardValue = minimax(3, false, -Infinity, Infinity);
+          game.undo();
+          if (boardValue > bestValue) {
+            bestValue = boardValue;
+            bestMove = move;
+          }
+        }
+        return bestMove;
+      }
+
+      function makeBestMove() {
+        const bestMove = getBestMove();
+        game.ugly_move(bestMove);
+        board.position(game.fen());
+      }
+
+      var config = {
+        draggable: true,
+        position: "start",
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        onSnapEnd: onSnapEnd,
+      };
+
+      var board = Chessboard("board", config);
+
+      $(document).ready(function () {
+        $("#startBtn").click(function () {
+          game.reset();
+          board.start();
+        });
+
+        $("#clearBtn").click(function () {
+          game.reset();
+          board.clear();
+        });
+      });
+    </script>
+  </head>
+  <body class="Site">
+    <header>
+      <h1>Basic Chess</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <main class="page-body">
+      <h1>Basic chess html css js index file</h1>
+      <p>Make a JavaScript Chess Board</p>
+      <p>Some text</p>
+      <div id="board" style="width: 600px"></div>
+      <button id="startBtn">Start Positions</button>
+      <button id="clearBtn">Clear Board</button>
+    </main>
+    <footer class="page-footer">
+      <p>&copy; 2021 CRR BASIC CHESS(HtmlCssJs)</p>
+    </footer>
+  </body>
+</html>
+```
+
+Changes made:
+
+1. Added the `evaluateBoard` function to evaluate the board position.
+2. Implemented the `minimax` algorithm with alpha-beta pruning.
+3. Added the `getBestMove` function to determine the best move using the `minimax` algorithm.
+4. Updated the `makeBestMove` function to use `getBestMove` for making the engine's move.
+
+Similar code found with 2 license types
+The `ugly_move` function in
+
+chess.js
+
+is a lower-level function that performs moves without updating the board state in a user-friendly way. However, it should not affect the quality of the moves themselves. The quality of the moves is more likely affected by the depth of the minimax search and the evaluation function.
+
+To improve the engine's moves, you can:
+
+1. Increase the depth of the minimax search.
+2. Improve the evaluation function to better assess the board position.
+
+Here's an improved version of the code with a better evaluation function and a deeper minimax search:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chess</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .Site {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background-color: #771515;
+        color: rgb(204, 192, 192);
+        padding: 10px;
+        text-align: center;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #444;
+        overflow: hidden;
+      }
+      nav ul li {
+        float: left;
+      }
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      nav ul li a:hover {
+        background-color: #111;
+      }
+      .page-body {
+        flex: 1;
+      }
+      .page-footer {
+        background-color: rgb(75, 70, 74);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      #board {
+        width: 600px;
+        margin: 20px;
+      }
+      button {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #startBtn {
+        margin: 10px;
+      }
+    </style>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../css/chessboard-1.0.0.css" />
+    <script src="../js/chessboard-1.0.0.js"></script>
+    <script type="module">
+      import { Chess } from "./chess.js";
+      const game = new Chess();
+
+      function onDragStart(source, piece, position, orientation) {
+        if (
+          game.in_checkmate() === true ||
+          game.in_draw() === true ||
+          piece.search(/^b/) !== -1
+        ) {
+          return false;
+        }
+      }
+
+      function onDrop(source, target) {
+        const move = game.move({
+          from: source,
+          to: target,
+          promotion: "q",
+        });
+
+        if (move === null) return "snapback";
+
+        window.setTimeout(makeBestMove, 250);
+      }
+
+      function onMouseoutSquare(square, piece) {
+        removeGreySquares();
+      }
+
+      function onMouseoverSquare(square, piece) {
+        const moves = game.moves({
+          square: square,
+          verbose: true,
+        });
+
+        if (moves.length === 0) return;
+
+        greySquare(square);
+
+        for (let i = 0; i < moves.length; i++) {
+          greySquare(moves[i].to);
+        }
+      }
+
+      function onSnapEnd() {
+        board.position(game.fen());
+      }
+
+      function removeGreySquares() {
+        $("#board .square-55d63").css("background", "");
+      }
+
+      function greySquare(square) {
+        const squareEl = $("#board .square-" + square);
+
+        let background = "#a9a9a9";
+        if (squareEl.hasClass("black-3c85d") === true) {
+          background = "#696969";
+        }
+
+        squareEl.css("background", background);
+      }
+
+      function evaluateBoard(board) {
+        const pieceValues = {
+          p: 100,
+          n: 320,
+          b: 330,
+          r: 500,
+          q: 900,
+          k: 20000,
+        };
+
+        let value = 0;
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const piece = board[row][col];
+            if (piece) {
+              const pieceValue = pieceValues[piece.type];
+              value += piece.color === "w" ? pieceValue : -pieceValue;
+            }
+          }
+        }
+        return value;
+      }
+
+      function minimax(depth, isMaximizingPlayer, alpha, beta) {
+        if (depth === 0 || game.game_over()) {
+          return evaluateBoard(game.board());
+        }
+
+        const possibleMoves = game.ugly_moves();
+        if (isMaximizingPlayer) {
+          let maxEval = -Infinity;
+          for (const move of possibleMoves) {
+            game.ugly_move(move);
+            const eval = minimax(depth - 1, false, alpha, beta);
+            game.undo();
+            maxEval = Math.max(maxEval, eval);
+            alpha = Math.max(alpha, eval);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return maxEval;
+        } else {
+          let minEval = Infinity;
+          for (const move of possibleMoves) {
+            game.ugly_move(move);
+            const eval = minimax(depth - 1, true, alpha, beta);
+            game.undo();
+            minEval = Math.min(minEval, eval);
+            beta = Math.min(beta, eval);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return minEval;
+        }
+      }
+
+      function getBestMove() {
+        let bestMove = null;
+        let bestValue = -Infinity;
+        const possibleMoves = game.ugly_moves();
+
+        for (const move of possibleMoves) {
+          game.ugly_move(move);
+          const boardValue = minimax(3, false, -Infinity, Infinity);
+          game.undo();
+          if (boardValue > bestValue) {
+            bestValue = boardValue;
+            bestMove = move;
+          }
+        }
+        return bestMove;
+      }
+
+      function makeBestMove() {
+        const bestMove = getBestMove();
+        game.ugly_move(bestMove);
+        board.position(game.fen());
+      }
+
+      var config = {
+        draggable: true,
+        position: "start",
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        onSnapEnd: onSnapEnd,
+      };
+
+      var board = Chessboard("board", config);
+
+      $(document).ready(function () {
+        $("#startBtn").click(function () {
+          game.reset();
+          board.start();
+        });
+
+        $("#clearBtn").click(function () {
+          game.reset();
+          board.clear();
+        });
+      });
+    </script>
+  </head>
+  <body class="Site">
+    <header>
+      <h1>Basic Chess</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <main class="page-body">
+      <h1>Basic chess html css js index file</h1>
+      <p>Make a JavaScript Chess Board</p>
+      <p>Some text</p>
+      <div id="board" style="width: 600px"></div>
+      <button id="startBtn">Start Positions</button>
+      <button id="clearBtn">Clear Board</button>
+    </main>
+    <footer class="page-footer">
+      <p>&copy; 2021 CRR BASIC CHESS(HtmlCssJs)</p>
+    </footer>
+  </body>
+</html>
+```
+
+Changes made:
+
+1. Improved the `evaluateBoard` function with more realistic piece values.
+2. Increased the depth of the `minimax` search to 3.
+3. Ensured the `minimax` function uses alpha-beta pruning to improve performance.
+
+Similar code found with 2 license types
+
+This code will enhance the engine's moves by evaluating the board position more accurately and searching
+deeper into the game tree. The engine will now make better moves based on the evaluation function and the
+minimax algorithm with alpha-beta pruning.
+The error `Uncaught SyntaxError: Unexpected eval or arguments in strict mode` is likely due to the use of the variable name `eval`, which is a reserved keyword in JavaScript. 
+To fix this, you should rename the variable to something else, such as `evaluation`.
+
+
+
+
+14:49 17/12/2024 TUE
+TODAY CRR FINALLY FIXES this CRRJSChess web app to play first full game
+Just finished...CRR vs CRRJSChess engine 1-0 Alekhine
+The engine played its first full game with reasonably good moves but even though it has more advanced move algorithms, it is very weak & will need developing to make it stronger...
+A WORK IN PROGRESS...
+It has taken much effort to get this far & there are many improvements to GUI & engine to make..BUT this is finally a good starting point to have achieved.
+Based around lhartikk GitHub simple-chess-ai  it is though my own CRR creation with a little help from ChatGPT & CoPilotAI & in MSVSCode IDE
+https://github.com/lhartikk/simple-chess-ai/blob/master/script.js
+
+CRR still has a lot to learn about chess & chess webdev
+
+
+CRRJSChess engine code>>>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chess</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .Site {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background-color: #771515;
+        color: rgb(204, 192, 192);
+        padding: 10px;
+        text-align: center;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #444;
+        overflow: hidden;
+      }
+      nav ul li {
+        float: left;
+      }
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      nav ul li a:hover {
+        background-color: #111;
+      }
+      .page-body {
+        flex: 1;
+      }
+      .page-footer {
+        background-color: rgb(75, 70, 74);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      #board {
+        width: 600px;
+        margin: 20px;
+      }
+      button {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #startBtn {
+        margin: 10px;
+      }
+    </style>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <!-- Ensure this line is included -->
+    <script type="module" src="./js/chess.js"></script>
+    <link rel="stylesheet" href="./css/chessboard-1.0.0.css" />
+    <script src="./js/chessboard-1.0.0.js"></script>
+
+    ...
+  </head>
+  <body class="Site">
+    <header>
+      <h1>Basic Chess</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <main class="page-body">
+      <h1>Basic chess html css js index file</h1>
+      <p>Make a JavaScript Chess Board</p>
+      <p>Some text</p>
+      <div id="board" style="width: 600px"></div>
+
+      <button id="startBtn">Start Positions</button>
+      <!-- The id tag allows the JQuery code to be executed when pressing the button. -->
+      <button id="clearBtn">Clear Board</button>
+      <ul id="move-history"></ul>
+    </main>
+    <footer class="page-footer">
+      <p>&copy; 2021 CRR BASIC CHESS(HtmlCssJs)</p>
+    </footer>
+    <script type="module">
+      import { Chess } from "./js/chess.js";
+      var board = Chessboard("board", {
+        draggable: true,
+        dropOffBoard: "trash",
+        position: "start",
+        onDrop: onDrop,
+      });
+      const chess = new Chess();
+
+      /*The "AI" part starts here */
+
+      function onDrop(source, target) {
+        // see if the move is legal
+        var move = chess.move({
+          from: source,
+          to: target,
+          promotion: "q", // NOTE: always promote to a queen for simplicity
+        });
+
+        // illegal move
+        if (move === null) return "snapback";
+
+        removeGreySquares();
+        renderMoveHistory(chess.history());
+        window.setTimeout(makeBestMove, 250);
+      }
+
+      function crrmove(move) {
+        const moveResult = chess.move(move);
+        if (moveResult) {
+          chess.history(move);
+          chess.turn = chess.turn === "w" ? "b" : "w";
+        }
+        return moveResult;
+      }
+
+      var minimaxRoot = function (depth, game, isMaximisingPlayer) {
+        var newGameMoves = game.moves({ verbose: true });
+        var bestMove = -9999;
+        var bestMoveFound;
+
+        for (var i = 0; i < newGameMoves.length; i++) {
+          var newGameMove = newGameMoves[i];
+          game.move(newGameMove);
+          var value = minimax(
+            depth - 1,
+            game,
+            -10000,
+            10000,
+            !isMaximisingPlayer
+          );
+          game.undo();
+          if (value >= bestMove) {
+            bestMove = value;
+            bestMoveFound = newGameMove;
+          }
+        }
+        return bestMoveFound;
+      };
+
+      var minimax = function (depth, game, alpha, beta, isMaximisingPlayer) {
+        positionCount++;
+        if (depth === 0) {
+          return -evaluateBoard(game.board());
+        }
+
+        var newGameMoves = game.moves({ verbose: true });
+
+        if (isMaximisingPlayer) {
+          var bestMove = -9999;
+          for (var i = 0; i < newGameMoves.length; i++) {
+            game.move(newGameMoves[i]);
+            bestMove = Math.max(
+              bestMove,
+              minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer)
+            );
+            game.undo();
+            alpha = Math.max(alpha, bestMove);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return bestMove;
+        } else {
+          var bestMove = 9999;
+          for (var i = 0; i < newGameMoves.length; i++) {
+            game.move(newGameMoves[i]);
+            bestMove = Math.min(
+              bestMove,
+              minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer)
+            );
+            game.undo();
+            beta = Math.min(beta, bestMove);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return bestMove;
+        }
+      };
+
+      var evaluateBoard = function (board) {
+        var totalEvaluation = 0;
+        for (var i = 0; i < 8; i++) {
+          for (var j = 0; j < 8; j++) {
+            totalEvaluation =
+              totalEvaluation + getPieceValue(board[i][j], i, j);
+          }
+        }
+        return totalEvaluation;
+      };
+
+      var reverseArray = function (array) {
+        return array.slice().reverse();
+      };
+
+      var pawnEvalWhite = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
+        [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
+        [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
+        [0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+        [0.5, -0.5, -1.0, 0.0, 0.0, -1.0, -0.5, 0.5],
+        [0.5, 1.0, 1.0, -2.0, -2.0, 1.0, 1.0, 0.5],
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      ];
+
+      var pawnEvalBlack = reverseArray(pawnEvalWhite);
+
+      var knightEval = [
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+        [-4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -2.0, -4.0],
+        [-3.0, 0.0, 1.0, 1.5, 1.5, 1.0, 0.0, -3.0],
+        [-3.0, 0.5, 1.5, 2.0, 2.0, 1.5, 0.5, -3.0],
+        [-3.0, 0.0, 1.5, 2.0, 2.0, 1.5, 0.0, -3.0],
+        [-3.0, 0.5, 1.0, 1.5, 1.5, 1.0, 0.5, -3.0],
+        [-4.0, -2.0, 0.0, 0.5, 0.5, 0.0, -2.0, -4.0],
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+      ];
+
+      var bishopEvalWhite = [
+        [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+        [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0, -1.0],
+        [-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, -1.0],
+        [-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, -1.0],
+        [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0],
+        [-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, -1.0],
+        [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+      ];
+
+      var bishopEvalBlack = reverseArray(bishopEvalWhite);
+
+      var rookEvalWhite = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0],
+      ];
+
+      var rookEvalBlack = reverseArray(rookEvalWhite);
+
+      var evalQueen = [
+        [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+        [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+        [-0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+        [0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+        [-1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+      ];
+
+      var kingEvalWhite = [
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+        [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+        [2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0],
+        [2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0],
+      ];
+
+      var kingEvalBlack = reverseArray(kingEvalWhite);
+
+      var getPieceValue = function (piece, x, y) {
+        if (piece === null) {
+          return 0;
+        }
+        var getAbsoluteValue = function (piece, isWhite, x, y) {
+          if (piece.type === "p") {
+            return 10 + (isWhite ? pawnEvalWhite[y][x] : pawnEvalBlack[y][x]);
+          } else if (piece.type === "r") {
+            return 50 + (isWhite ? rookEvalWhite[y][x] : rookEvalBlack[y][x]);
+          } else if (piece.type === "n") {
+            return 30 + knightEval[y][x];
+          } else if (piece.type === "b") {
+            return (
+              30 + (isWhite ? bishopEvalWhite[y][x] : bishopEvalBlack[y][x])
+            );
+          } else if (piece.type === "q") {
+            return 90 + evalQueen[y][x];
+          } else if (piece.type === "k") {
+            return 900 + (isWhite ? kingEvalWhite[y][x] : kingEvalBlack[y][x]);
+          }
+          throw "Unknown piece type: " + piece.type;
+        };
+
+        var absoluteValue = getAbsoluteValue(piece, piece.color === "w", x, y);
+        return piece.color === "w" ? absoluteValue : -absoluteValue;
+      };
+
+      /* board visualization and games state handling */
+
+      var onDragStart = function (source, piece, position, orientation) {
+        if (
+          game.in_checkmate() === true ||
+          game.in_draw() === true ||
+          piece.search(/^b/) !== -1
+        ) {
+          return false;
+        }
+      };
+
+      function makeBestMove() {
+        var bestMove = getBestMove(chess); // Use chess instead of game
+        chess.move(bestMove);
+        board.position(chess.fen());
+      }
+
+      var positionCount;
+
+      function getBestMove(game) {
+        var bestMove = minimaxRoot(3, game, true);
+        return bestMove;
+      }
+
+      function getBestMoveWithStats(game) {
+        positionCount = 0;
+        var depth = parseInt($("#search-depth").find(":selected").text());
+
+        var d = new Date().getTime();
+        var bestMove = minimaxRoot(depth, game, true);
+        var d2 = new Date().getTime();
+        var moveTime = d2 - d;
+        var positionsPerS = (positionCount * 1000) / moveTime;
+
+        $("#position-count").text(positionCount);
+        $("#time").text(moveTime / 1000 + "s");
+        $("#positions-per-s").text(positionsPerS);
+        return bestMove;
+      }
+
+      var renderMoveHistory = function (moves) {
+        var historyElement = $("#move-history").empty();
+        historyElement.empty();
+        for (var i = 0; i < moves.length; i = i + 2) {
+          historyElement.append(
+            "<span>" +
+              moves[i] +
+              " " +
+              (moves[i + 1] ? moves[i + 1] : " ") +
+              "</span><br>"
+          );
+        }
+        historyElement.scrollTop(historyElement[0].scrollHeight);
+      };
+
+      function removeGreySquares() {
+        $("#board .square-55d63").css("background", "");
+      }
+
+      function greySquare(square) {
+        var squareEl = $("#board .square-" + square);
+
+        var background = "#a9a9a9";
+        if (squareEl.hasClass("black-3c85d") === true) {
+          background = "#696969";
+        }
+
+        squareEl.css("background", background);
+      }
+
+      var onMouseoverSquare = function (square, piece) {
+        var moves = chess.moves({
+          square: square,
+          verbose: true,
+        });
+
+        if (moves.length === 0) return;
+
+        greySquare(square);
+
+        for (var i = 0; i < moves.length; i++) {
+          greySquare(moves[i].to);
+        }
+      };
+
+      var onMouseoutSquare = function (square, piece) {
+        removeGreySquares();
+      };
+
+      var onSnapEnd = function () {
+        board.position(chess.fen());
+      };
+
+      var cfg = {
+        draggable: true,
+        position: "start",
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        onSnapEnd: onSnapEnd,
+      };
+
+      $(document).ready(function () {
+        $("#startBtn").click(function () {
+          game.reset();
+          board.start();
+        });
+
+        $("#clearBtn").click(function () {
+          game.reset();
+          board.clear();
+        });
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chess</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .Site {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        background-color: #771515;
+        color: rgb(204, 192, 192);
+        padding: 10px;
+        text-align: center;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #444;
+        overflow: hidden;
+      }
+      nav ul li {
+        float: left;
+      }
+      nav ul li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      nav ul li a:hover {
+        background-color: #111;
+      }
+      .page-body {
+        flex: 1;
+      }
+      .page-footer {
+        background-color: rgb(75, 70, 74);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      #board {
+        width: 600px;
+        margin: 20px;
+      }
+      button {
+        background-color: #4caf50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #startBtn {
+        margin: 10px;
+      }
+    </style>
+    <script src="./jquery-3.7.1.min.js"></script>
+    <!-- Ensure this line is included -->
+    <script type="module" src="./js/chess.js"></script>
+    <link rel="stylesheet" href="./css/chessboard-1.0.0.css" />
+    <script src="./js/chessboard-1.0.0.js"></script>
+
+    ...
+  </head>
+  <body class="Site">
+    <header>
+      <h1>Basic Chess</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <main class="page-body">
+      <h1>Basic chess html css js index file</h1>
+      <p>Make a JavaScript Chess Board</p>
+      <p>Some text</p>
+      <div id="board" style="width: 600px"></div>
+
+      <button id="startBtn">Start Positions</button>
+      <!-- The id tag allows the JQuery code to be executed when pressing the button. -->
+      <button id="clearBtn">Clear Board</button>
+      <ul id="move-history"></ul>
+    </main>
+    <footer class="page-footer">
+      <p>&copy; 2021 CRR BASIC CHESS(HtmlCssJs)</p>
+    </footer>
+    <script type="module">
+      import { Chess } from "./js/chess.js";
+      var board = Chessboard("board", {
+        draggable: true,
+        dropOffBoard: "trash",
+        position: "start",
+        onDrop: onDrop,
+      });
+      const chess = new Chess();
+
+      /*The "AI" part starts here */
+
+      function onDrop(source, target) {
+        // see if the move is legal
+        var move = chess.move({
+          from: source,
+          to: target,
+          promotion: "q", // NOTE: always promote to a queen for simplicity
+        });
+
+        // illegal move
+        if (move === null) return "snapback";
+
+        removeGreySquares();
+        renderMoveHistory(chess.history());
+        window.setTimeout(makeBestMove, 250);
+      }
+
+      function crrmove(move) {
+        const moveResult = chess.move(move);
+        if (moveResult) {
+          chess.history(move);
+          chess.turn = chess.turn === "w" ? "b" : "w";
+        }
+        return moveResult;
+      }
+
+      var minimaxRoot = function (depth, game, isMaximisingPlayer) {
+        var newGameMoves = game.moves({ verbose: true });
+        var bestMove = -9999;
+        var bestMoveFound;
+
+        for (var i = 0; i < newGameMoves.length; i++) {
+          var newGameMove = newGameMoves[i];
+          game.move(newGameMove);
+          var value = minimax(
+            depth - 1,
+            game,
+            -10000,
+            10000,
+            !isMaximisingPlayer
+          );
+          game.undo();
+          if (value >= bestMove) {
+            bestMove = value;
+            bestMoveFound = newGameMove;
+          }
+        }
+        return bestMoveFound;
+      };
+
+      var minimax = function (depth, game, alpha, beta, isMaximisingPlayer) {
+        positionCount++;
+        if (depth === 0) {
+          return -evaluateBoard(game.board());
+        }
+
+        var newGameMoves = game.moves({ verbose: true });
+
+        if (isMaximisingPlayer) {
+          var bestMove = -9999;
+          for (var i = 0; i < newGameMoves.length; i++) {
+            game.move(newGameMoves[i]);
+            bestMove = Math.max(
+              bestMove,
+              minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer)
+            );
+            game.undo();
+            alpha = Math.max(alpha, bestMove);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return bestMove;
+        } else {
+          var bestMove = 9999;
+          for (var i = 0; i < newGameMoves.length; i++) {
+            game.move(newGameMoves[i]);
+            bestMove = Math.min(
+              bestMove,
+              minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer)
+            );
+            game.undo();
+            beta = Math.min(beta, bestMove);
+            if (beta <= alpha) {
+              break;
+            }
+          }
+          return bestMove;
+        }
+      };
+
+      var evaluateBoard = function (board) {
+        var totalEvaluation = 0;
+        for (var i = 0; i < 8; i++) {
+          for (var j = 0; j < 8; j++) {
+            totalEvaluation =
+              totalEvaluation + getPieceValue(board[i][j], i, j);
+          }
+        }
+        return totalEvaluation;
+      };
+
+      var reverseArray = function (array) {
+        return array.slice().reverse();
+      };
+
+      var pawnEvalWhite = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
+        [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
+        [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
+        [0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+        [0.5, -0.5, -1.0, 0.0, 0.0, -1.0, -0.5, 0.5],
+        [0.5, 1.0, 1.0, -2.0, -2.0, 1.0, 1.0, 0.5],
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      ];
+
+      var pawnEvalBlack = reverseArray(pawnEvalWhite);
+
+      var knightEval = [
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+        [-4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -2.0, -4.0],
+        [-3.0, 0.0, 1.0, 1.5, 1.5, 1.0, 0.0, -3.0],
+        [-3.0, 0.5, 1.5, 2.0, 2.0, 1.5, 0.5, -3.0],
+        [-3.0, 0.0, 1.5, 2.0, 2.0, 1.5, 0.0, -3.0],
+        [-3.0, 0.5, 1.0, 1.5, 1.5, 1.0, 0.5, -3.0],
+        [-4.0, -2.0, 0.0, 0.5, 0.5, 0.0, -2.0, -4.0],
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+      ];
+
+      var bishopEvalWhite = [
+        [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+        [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0, -1.0],
+        [-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, -1.0],
+        [-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, -1.0],
+        [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0],
+        [-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, -1.0],
+        [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+      ];
+
+      var bishopEvalBlack = reverseArray(bishopEvalWhite);
+
+      var rookEvalWhite = [
+        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+        [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0],
+      ];
+
+      var rookEvalBlack = reverseArray(rookEvalWhite);
+
+      var evalQueen = [
+        [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+        [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+        [-0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+        [0.0, 0.0, 0.5, 0.5, 0.5, 0.5, 0.0, -0.5],
+        [-1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.0, -1.0],
+        [-1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, -1.0],
+        [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+      ];
+
+      var kingEvalWhite = [
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+        [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+        [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+        [2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0],
+        [2.0, 3.0, 1.0, 0.0, 0.0, 1.0, 3.0, 2.0],
+      ];
+
+      var kingEvalBlack = reverseArray(kingEvalWhite);
+
+      var getPieceValue = function (piece, x, y) {
+        if (piece === null) {
+          return 0;
+        }
+        var getAbsoluteValue = function (piece, isWhite, x, y) {
+          if (piece.type === "p") {
+            return 10 + (isWhite ? pawnEvalWhite[y][x] : pawnEvalBlack[y][x]);
+          } else if (piece.type === "r") {
+            return 50 + (isWhite ? rookEvalWhite[y][x] : rookEvalBlack[y][x]);
+          } else if (piece.type === "n") {
+            return 30 + knightEval[y][x];
+          } else if (piece.type === "b") {
+            return (
+              30 + (isWhite ? bishopEvalWhite[y][x] : bishopEvalBlack[y][x])
+            );
+          } else if (piece.type === "q") {
+            return 90 + evalQueen[y][x];
+          } else if (piece.type === "k") {
+            return 900 + (isWhite ? kingEvalWhite[y][x] : kingEvalBlack[y][x]);
+          }
+          throw "Unknown piece type: " + piece.type;
+        };
+
+        var absoluteValue = getAbsoluteValue(piece, piece.color === "w", x, y);
+        return piece.color === "w" ? absoluteValue : -absoluteValue;
+      };
+
+      /* board visualization and games state handling */
+
+      var onDragStart = function (source, piece, position, orientation) {
+        if (
+          game.in_checkmate() === true ||
+          game.in_draw() === true ||
+          piece.search(/^b/) !== -1
+        ) {
+          return false;
+        }
+      };
+
+      function makeBestMove() {
+        var bestMove = getBestMove(chess); // Use chess instead of game
+        chess.move(bestMove);
+        board.position(chess.fen());
+      }
+
+      var positionCount;
+
+      function getBestMove(game) {
+        var bestMove = minimaxRoot(3, game, true);
+        return bestMove;
+      }
+
+      function getBestMoveWithStats(game) {
+        positionCount = 0;
+        var depth = parseInt($("#search-depth").find(":selected").text());
+
+        var d = new Date().getTime();
+        var bestMove = minimaxRoot(depth, game, true);
+        var d2 = new Date().getTime();
+        var moveTime = d2 - d;
+        var positionsPerS = (positionCount * 1000) / moveTime;
+
+        $("#position-count").text(positionCount);
+        $("#time").text(moveTime / 1000 + "s");
+        $("#positions-per-s").text(positionsPerS);
+        return bestMove;
+      }
+
+      var renderMoveHistory = function (moves) {
+        var historyElement = $("#move-history").empty();
+        historyElement.empty();
+        for (var i = 0; i < moves.length; i = i + 2) {
+          historyElement.append(
+            "<span>" +
+              moves[i] +
+              " " +
+              (moves[i + 1] ? moves[i + 1] : " ") +
+              "</span><br>"
+          );
+        }
+        historyElement.scrollTop(historyElement[0].scrollHeight);
+      };
+
+      function removeGreySquares() {
+        $("#board .square-55d63").css("background", "");
+      }
+
+      function greySquare(square) {
+        var squareEl = $("#board .square-" + square);
+
+        var background = "#a9a9a9";
+        if (squareEl.hasClass("black-3c85d") === true) {
+          background = "#696969";
+        }
+
+        squareEl.css("background", background);
+      }
+
+      var onMouseoverSquare = function (square, piece) {
+        var moves = chess.moves({
+          square: square,
+          verbose: true,
+        });
+
+        if (moves.length === 0) return;
+
+        greySquare(square);
+
+        for (var i = 0; i < moves.length; i++) {
+          greySquare(moves[i].to);
+        }
+      };
+
+      var onMouseoutSquare = function (square, piece) {
+        removeGreySquares();
+      };
+
+      var onSnapEnd = function () {
+        board.position(chess.fen());
+      };
+
+      var cfg = {
+        draggable: true,
+        position: "start",
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        onSnapEnd: onSnapEnd,
+      };
+
+      $(document).ready(function () {
+        $("#startBtn").click(function () {
+          game.reset();
+          board.start();
+        });
+
+        $("#clearBtn").click(function () {
+          game.reset();
+          board.clear();
+        });
+      });
+    </script>
+  </body>
+</html>
